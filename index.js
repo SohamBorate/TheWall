@@ -115,6 +115,17 @@ app.get("/post", async (req, res) => {
     res.render("post");
 });
 
+const getIpFromRequest = (req) => {
+    let ips = (
+        req.headers['cf-connecting-ip'] ||
+        req.headers['x-real-ip'] ||
+        req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress || ''
+    ).split(',');
+
+    return ips[0].trim();
+};
+
 app.post("/post", async (req, res) => {
     if (!Post || !dbConnection) {
         res.send("Could not publish post, please try again later.");
@@ -128,7 +139,7 @@ app.post("/post", async (req, res) => {
 
     let options = {
         hostname: "ip-api.com",
-        path: `/json/${req.socket.remoteAddress}`,
+        path: `/json/${getIpFromRequest(req)}`,
         // path: `/json/24.48.0.1`,
         method: "GET"
     };
@@ -137,7 +148,7 @@ app.post("/post", async (req, res) => {
         content: content,
         author: author,
         createdAt: Math.floor(Date.now() / 1000),
-        ipAddress: ip.toBuffer(req.socket.remoteAddress)
+        ipAddress: ip.toBuffer(getIpFromRequest(req))
     });
 
     let httpRequest = http.request(options, (httpResponse) => {
