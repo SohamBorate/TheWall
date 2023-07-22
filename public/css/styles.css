@@ -9,8 +9,10 @@
     border-radius: 0;
     margin-bottom: 0;
     font-size: 12px;
-    letter-spacing: 5px;
+    letter-spacing: 2px;
 }
-.navbar-nav  li a:hover {
-    color: #1abc9c !important;
+
+body {
+    background-color: rgb(19, 22, 26);
+    color: white;
 }

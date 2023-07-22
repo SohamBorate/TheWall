@@ -1,60 +1,3 @@
-// const { spawn } = require("node:child_process")
-// const logOutput = (name) => (data) => console.log(`[${name}] ${data.toString()}`)
-
-// function run() {
-//     const process = spawn("python", ["script.py", "4", "2300", "1300"]);
-//     process.stdout.on(
-//         "data",
-//         logOutput("stdout")
-//     );
-//     process.stderr.on(
-//         "data",
-//         logOutput("stderr")
-//     );
-// }
-
-// run()
-
-///////////////////////////////////////////////////////////////////////////////
-
-// const main = async () => {
-//     console.log("Connection attempt")
-//     const userDBConnection = mongoose.createConnection(`${process.env.MONGODB_URI}/userDB`)
-
-//     console.log("Schema creation")
-//     const userSchema = new mongoose.Schema({
-//         name: {type: String},
-//         email: {type: String},
-//         created: {type: Number, default: Date.now()}
-//     }, { collection: "users" });
-
-//     // emails collection, email document
-//     const User = userDBConnection.model("user", userSchema);
-
-//     console.log("user creation")
-//     const personal = new User({
-//         name: "Soham Borate",
-//         email: "soham.borate@outlook.com",
-//     });
-
-//     // console.log("user saving")
-//     // await personal.save();
-
-//     console.log(personal)
-//     var created = new Date(personal.created)
-//     console.log(created.toLocaleDateString("en-IN"))
-
-//     console.log("retrieving users")
-//     var users = await User.find({name: { $regex: "Soham", $options: "i" }});
-//     // console.log(users);
-
-//     // console.log("deleting presence")
-//     // users = await User.deleteMany();
-//     // console.log(users);
-// }
-
-// main().catch(err => console.log(err));
-
 const express = require("express");
 const ip = require("ip");
 const http = require("http");
@@ -111,8 +54,8 @@ app.get("/", async (req, res) => {
     res.render("home", {posts: postArray});
 });
 
-app.get("/post", async (req, res) => {
-    res.render("post");
+app.get("/write", async (req, res) => {
+    res.render("write");
 });
 
 const getIpFromRequest = (req) => {
@@ -126,13 +69,19 @@ const getIpFromRequest = (req) => {
     return ips[0].trim();
 };
 
-app.post("/post", async (req, res) => {
+app.post("/write", async (req, res) => {
     if (!Post || !dbConnection) {
         res.send("Could not publish post, please try again later.");
-        return
+        return;
     }
-    let content = req.body.question;
+    let content = req.body.content;
     let author = req.body.author;
+
+    if (content === "") {
+        res.send("You need to write some text in content!");
+        return;
+    }
+
     if (author === "") {
         author = "Anonymous"
     }
@@ -176,8 +125,10 @@ app.post("/post", async (req, res) => {
     }).end();
 });
 
+setupDB()
+
 app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server running on port ${(process.env.PORT || 3000)}`);
+    console.log(`Server running on port ${process.env.PORT || 3000}`);
 });
 
-setupDB()
+module.exports = app;

@@ -8,17 +8,18 @@
     <br>
     <div class = "container">
 
-        <h1>Post</h1>
-        <form action = "/post" method = "post">
+        <h2>Write something on the wall</h1><br>
+        <form action = "/write" method = "post">
             <div class = "form-group">
-                <h3>Question</h3>
-                <input name = "question" class = "form-control">
-            </div>
+                <h3>Content</h3>
+                <input name = "content" class = "form-control">
+            </div><br>
             <div class = "form-group">
                 <h3>Name (leave blank for Anonymous)</h3>
                 <input type = "text" name = "author" class = "form-control" autocomplete = "off">
             </div>
-            <button class = "btn btn-primary" type = "submit">Submit</button>
+            <br>
+            <button class = "btn btn-primary btn-dark" type = "submit">Submit</button>
         </form>
 
     </div>
